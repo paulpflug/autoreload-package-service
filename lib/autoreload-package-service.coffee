@@ -13,12 +13,12 @@ module.exports = new class AutoreloadPackageService
   consumeDebug: (debugSetup) =>
     @debug = debugSetup(pkg: "autoreload-package-service", nsp: "")
     @debug("got debug service",2)
-  recursiveDelete: (children) ->
+  recursiveDelete: (children) =>
     return unless children? and children.length?
     for child in children
       if child?.id? and require.cache[child.id]?
         children = require.cache[child.id].children
-        recursiveDelete children if children?
+        @recursiveDelete children if children?
         delete require.cache[child.id]
     null
   provideAutoreload: =>
