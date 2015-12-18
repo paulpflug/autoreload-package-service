@@ -4,6 +4,8 @@ provides a service which other packages can use to reload on file change
 
 ![autoreload-package-service](https://cloud.githubusercontent.com/assets/1881921/8182233/b969fc1c-142d-11e5-9845-91a13374ba0c.png)
 
+#### Only works in dev mode!
+
 ## Usage
 
 package.json
