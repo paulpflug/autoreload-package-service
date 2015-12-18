@@ -67,7 +67,6 @@ module.exports = new class AutoreloadPackageService
         watchers.push disposable
         @disposables.add disposable
       for file in files
-        console.log file
         disposable = rootDir.getFile(file).onDidChange -> setTimeout reload,10
         watchers.push disposable
         @disposables.add disposable
