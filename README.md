@@ -33,6 +33,25 @@ your package:
     # folders are watched and your package reloaded on changes, defaults to ["lib/"]
 ```
 
+Keep in mind, the service wont be loaded if your `activate` function throws an error.
+This is recommended:
+```coffee
+  #in main module
+  activate: ->
+    realActivate = ->
+      #do your stuff
+    if atom.inDevMode()
+      try
+        realActivate()
+      catch e
+        console.log e
+    else
+      realActivate()
+  #make sure your deactivate wont throw, even when realActivate wasn't successful
+  deactivate: ->
+    somestuff?.dispose()
+```
+
 ## License
 Copyright (c) 2015 Paul Pflugradt
 Licensed under the MIT license.
