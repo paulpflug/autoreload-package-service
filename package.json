@@ -1,7 +1,7 @@
 {
   "name": "autoreload-package-service",
   "description": "a reloader for atom packages",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/paulpflug/",
   "author": {
     "name": "Paul Pflugradt",
