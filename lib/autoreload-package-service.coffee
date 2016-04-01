@@ -17,8 +17,8 @@ module.exports = new class AutoreloadPackageService
     return unless children? and children.length?
     for child in children
       if child?.id? and require.cache[child.id]?
-        children = require.cache[child.id].children
-        @recursiveDelete children if children?
+        childs = require.cache[child.id].children
+        @recursiveDelete childs if childs?
         delete require.cache[child.id]
     null
   provideAutoreload: =>
@@ -45,9 +45,11 @@ module.exports = new class AutoreloadPackageService
         dispose()
         pkgModel = atom.packages.getLoadedPackage(pkg)
         mainPath = pkgModel.mainModulePath
+        @debug("deactivating #{pkg}",2)
         pkgModel.deactivate()
         pkgModel.mainModule = null
         pkgModel.mainModuleRequired = false
+        @debug("resetting #{pkg}",2)
         pkgModel.reset()
         if require.cache[mainPath]?
           @recursiveDelete require.cache[mainPath].children
@@ -59,7 +61,9 @@ module.exports = new class AutoreloadPackageService
         for id in deps
           @recursiveDelete require.cache[id]?.children
           delete require.cache[id]
+        @debug("loading #{pkg}",2)
         pkgModel.load()
+        @debug("activating #{pkg}",2)
         pkgModel.activate()
       for folder in folders
         disposable = rootDir.getSubdirectory(folder).onDidChange ->
@@ -72,9 +76,9 @@ module.exports = new class AutoreloadPackageService
         @disposables.add disposable
       #dispose on package deactivate
       disposable = atom.packages.onDidDeactivatePackage -> setTimeout ((p) ->
-          if p.name == pkg
-            dispose()
-          ),10
+        if p.name == pkg
+          dispose()
+        ),10
       watchers.push disposable
       @disposables.add disposable
       return {reload:reload,dispose:dispose}
