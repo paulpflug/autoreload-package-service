@@ -24,7 +24,7 @@ module.exports = new class AutoreloadPackageService
   provideAutoreload: =>
     return ({pkg,folders,files}) =>
       throw new Error "no pkg provided" unless pkg?
-      return null unless atom.inDevMode()
+      return {dispose: ->} unless atom.inDevMode()
       folders ?= ["lib"]
       files ?= ["package.json"]
       watchers = []
