@@ -8,6 +8,8 @@ module.exports = new class AutoreloadPackageService
   debug: ->
   activate: ->
     {CompositeDisposable} = require 'atom'
+    @chokidar = require 'chokidar'
+    @nodePath = require 'path'
     @disposables = new CompositeDisposable
     @disposables.add @provideAutoreload()(pkg:"autoreload-package-service")
   consumeDebug: (debugSetup) =>
@@ -65,19 +67,18 @@ module.exports = new class AutoreloadPackageService
         pkgModel.load()
         @debug("activating #{pkg}",2)
         pkgModel.activate()
-      for folder in folders
-        disposable = rootDir.getSubdirectory(folder).onDidChange ->
-          setTimeout reload,10
-        watchers.push disposable
-        @disposables.add disposable
-      for file in files
-        disposable = rootDir.getFile(file).onDidChange -> setTimeout reload,10
-        watchers.push disposable
-        @disposables.add disposable
+      watcher = @chokidar.watch(
+        [
+          folders.map((folder) => @nodePath.join(pkgPath, folder))...
+          files.map((file) => @nodePath.join(pkgPath, file))...
+        ], persistent: true, ignoreInitial: true
+      )
+      watcher.on 'all', () ->
+        setTimeout reload, 10
       #dispose on package deactivate
       disposable = atom.packages.onDidDeactivatePackage -> setTimeout ((p) ->
         if p.name == pkg
-          dispose()
+          watcher.close()
         ),10
       watchers.push disposable
       @disposables.add disposable

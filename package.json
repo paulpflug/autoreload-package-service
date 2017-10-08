@@ -12,12 +12,11 @@
     "atom": ">=0.174.0 <2.0.0"
   },
   "main": "lib/autoreload-package-service",
-  "keywords": [
-    "atom",
-    "package",
-    "reloader"
-  ],
+  "keywords": ["atom", "package", "reloader"],
   "readmeFilename": "README.md",
+  "dependencies": {
+    "chokidar": "^1.7.0"
+  },
   "providedServices": {
     "autoreload": {
       "description": "autoreload in dev-mode",
